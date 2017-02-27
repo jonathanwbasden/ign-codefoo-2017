@@ -1,0 +1,137 @@
+html, body {
+	height: 100%;
+	width: 100%;
+	margin 0;
+}
+
+#app {
+	height: 100%;
+	width: 100%;
+	background-color: #dee6f2;
+}
+
+#center {
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	width:800px;
+	height:100%;
+	margin: 0 auto;
+}
+
+#content {
+    border-radius: 10px;
+    display: flex;
+ 	flex-wrap: wrap;
+ 	background-color: #F7F7F7;
+ 	height: auto;
+ 	padding: 10px;
+ 	width: 600px;
+ 	max-height: 800px;
+ 	overflow: auto;
+}
+
+#header {
+	width: 100%;
+	margin: 10px;
+	height: 35px;
+	border-radius: 20px;
+	border: 1px solid #D62929;
+}
+
+#videos {
+	width: 50%;
+	height: 100%;
+	float: left;
+	border-radius: 30px 0px 0px 30px;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+#articles {
+	width: 50%;
+	height: 100%;
+	float: left;
+	border-radius: 0px 30px 30px 0px;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.unactive-header:hover {
+	text-decoration: underline; 
+	cursor: default;
+}
+
+.active-header {
+	cursor: default;
+	color: #F7F7F7;
+	background-color: #D62929;
+}
+
+.unactive-header {
+	cursor: default;
+	background-color: #F7F7F7;
+	color: #D62929;
+}
+
+table {
+	font-size: 15px;
+}
+
+table tbody tr:hover {
+	background-color: #dad8d8;
+	cursor: default;
+}
+
+table tbody tr:hover .hover-bar {
+	visibility: visible;
+}
+
+.counter, .title {
+	font-weight: bold;
+}
+
+.counter {
+	text-align: center;
+	width: 10%;
+}
+
+.title {
+	text-align: left;
+	width: 80%;
+}
+
+.duration {
+	width: 10%;
+	vertical-align: bottom !important;
+	color: gray !important;
+}
+
+.hover-bar {
+	background-color: #D62929;
+	visibility: hidden;
+}
+
+.description {
+	color: #adadad;
+}
+
+#load {
+	margin-left: 80px;
+	font-size: 12px;
+	font-weight: bold;
+	color: gray;
+}
+
+#load:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+
