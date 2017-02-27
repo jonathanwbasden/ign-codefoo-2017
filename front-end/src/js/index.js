@@ -14,7 +14,7 @@ class App extends React.Component {
 		this.loadMoreData = this.loadMoreData.bind(this);
 		this.handleRowClick = this.handleRowClick.bind(this);
 		this.openImageUrl = this.openImageUrl.bind(this);
-		this.state = {activeClass: "videos", data: [], maxRows: 5, clickedRows: [], loaded: false};
+		this.state = {activeClass: "videos", data: [], maxRows: 5, clickedRows: [], loaded: false, index: 0};
 	}
 
 	retrieveVideos() {
@@ -25,7 +25,7 @@ class App extends React.Component {
 			dataType: 'json'
 		}).done(function(data) {
 			console.dir(data);
-			this.setState({data: data.data, activeClass: "videos", maxRows: 5, clickedRows: []});
+			this.setState({data: data.data, activeClass: "videos", maxRows: 5, clickedRows: [], loaded: true});
 		}.bind(this))
 		.fail(function(data){
 			console.log(data);
@@ -40,7 +40,7 @@ class App extends React.Component {
 			dataType: 'json'
 		}).done(function(data) {
 			console.dir(data);
-			this.setState({data: data.data, activeClass: "articles", maxRows: 5, clickedRows: []});
+			this.setState({data: data.data, activeClass: "articles", maxRows: 5, clickedRows: [], loaded: true});
 		}.bind(this))
 		.fail(function(data){
 			console.log(data);
@@ -56,7 +56,7 @@ class App extends React.Component {
 			dataType: 'json'
 		}).done(function(data) {
 			console.dir(data);
-			this.setState({data: data.data, activeClass: (this.state.activeClass==='videos'?'videos':'articles'), maxRows: maxRows});
+			this.setState({data: data.data, activeClass: (this.state.activeClass==='videos'?'videos':'articles'), maxRows: maxRows, index: maxRows-5});
 		}.bind(this))
 		.fail(function(data){
 			console.log(data);
@@ -71,19 +71,28 @@ class App extends React.Component {
 		else {
 			clickedRows.push(row);
 		}
-		this.setState({clickedRow: clickedRows});
+		this.setState({clickedRow: clickedRows, index: row});
+		this.refs[this.state.index].scrollIntoView();
 	}
 
 	openImageUrl(url) {
-		window.open(url, '_tab');
+		var open = window.open(url, '_blank');
+		open.focus();
+	}
+
+	componentDidUpdate() {
+		this.refs[this.state.index].scrollIntoView();
 	}
 
 	componentDidMount() {
 		$.ajax({
 			url: 'http://ign-apis.herokuapp.com/videos?startIndex=0&count='+this.state.maxRows,
-			type: 'GET',			
-			headers:{'Access-Control-Allow-Headers': 'x-requested-with'},
-			dataType: 'json'
+			crossOrigin: true,
+			type: 'GET',
+			xhrFields: { withCredentials: true },	
+			dataType: 'json',
+			accept: 'application/json',
+			headers:{'Access-Control-Allow-Origin': '*'}
 		}).done(function(data) {
 			console.dir(data);
 			this.setState({data: data.data, loaded: true});
@@ -94,16 +103,15 @@ class App extends React.Component {
   	}
 
 	render() {
-		let rows = [];
-		let count = 1;
+		let rows = [], count = 1;
 		for(var i = 0; i < this.state.data.length && this.state.loaded; i++) {
 			var row = this.state.data[i];
 			rows.push(
-				<tr onClick={this.handleRowClick.bind(this, i)}>
+				<tr ref={i} key={i} onClick={this.handleRowClick.bind(this, i)}>
 					<td className="hover-bar"></td>
 					<td className="counter">{(count<10? "0":"")+count++}</td>
 					<td className="title">
-						{this.state.activeClass==='videos'? row.metadata.longTitle:row.metadata.headline}
+						{this.state.activeClass==='videos'? row.metadata.name:row.metadata.headline}
 						<div className="description">
 							{this.state.activeClass==='videos'? row.metadata.description:row.metadata.subHeadline}
 						</div>
@@ -112,7 +120,7 @@ class App extends React.Component {
 				</tr>
 			);
 			rows.push(	
-			 	<tr style={{display: (this.state.clickedRows.indexOf(i) > -1? '':'none')}}>
+			 	<tr key={'image-'+i} style={{display: (this.state.clickedRows.indexOf(i) > -1? '':'none')}}>
 					<td style={{height: '100%', width: '100%', position: 'relative'}} colSpan="4">
 						<div style={{cursor: 'pointer'}} onClick={this.openImageUrl.bind(this, this.state.activeClass==='videos'? row.metadata.url:'http://www.ign.com/articles/'+row.metadata.slug)} className="goToIgn">GO TO IGN</div>
 						<div className="image-background">
@@ -122,7 +130,6 @@ class App extends React.Component {
 						</div>
 					</td>
 				</tr>
-				
 			);	
 		}
 		return (
@@ -139,8 +146,7 @@ class App extends React.Component {
 	    					</tbody>
 				        </table>
 				    </div>
-			        {this.state.loaded && <div onClick={this.loadMoreData} id="load">{"SEE MORE " + (this.state.activeClass==="videos"? "VIDEOS...":"ARTICLES...")}</div>}
-			    	
+			        {this.state.loaded && <div onClick={this.loadMoreData} id="load">{"SEE MORE " + (this.state.activeClass==="videos"? "VIDEOS...":"ARTICLES...")}</div>}    	
 				</div>
 			</div>
 		);
