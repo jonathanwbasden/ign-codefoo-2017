@@ -14,7 +14,7 @@ class App extends React.Component {
 		this.loadMoreData = this.loadMoreData.bind(this);
 		this.handleRowClick = this.handleRowClick.bind(this);
 		this.openImageUrl = this.openImageUrl.bind(this);
-		this.state = {activeClass: "videos", data: [], maxRows: 5, clickedRows: []};
+		this.state = {activeClass: "videos", data: [], maxRows: 5, clickedRows: [], loaded: false};
 	}
 
 	retrieveVideos() {
@@ -86,7 +86,7 @@ class App extends React.Component {
 			dataType: 'json'
 		}).done(function(data) {
 			console.dir(data);
-			this.setState({data: data.data});
+			this.setState({data: data.data, loaded: true});
 		}.bind(this))
 		.fail(function(data){
 			console.log(data);
@@ -96,7 +96,7 @@ class App extends React.Component {
 	render() {
 		let rows = [];
 		let count = 1;
-		for(var i = 0; i < this.state.data.length; i++) {
+		for(var i = 0; i < this.state.data.length && this.state.loaded; i++) {
 			var row = this.state.data[i];
 			rows.push(
 				<tr onClick={this.handleRowClick.bind(this, i)}>
@@ -141,7 +141,8 @@ class App extends React.Component {
 	    					</tbody>
 				        </table>
 				    </div>
-			        <div onClick={this.loadMoreData} id="load">{"SEE MORE " + (this.state.activeClass==="videos"? "VIDEOS...":"ARTICLES...")}</div>
+			        {this.state.loaded && <div onClick={this.loadMoreData} id="load">{"SEE MORE " + (this.state.activeClass==="videos"? "VIDEOS...":"ARTICLES...")}</div>}
+			    	
 				</div>
 			</div>
 		);
