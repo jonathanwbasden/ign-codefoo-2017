@@ -12,7 +12,9 @@ class App extends React.Component {
 		this.retrieveVideos = this.retrieveVideos.bind(this);
 		this.retrieveArticles = this.retrieveArticles.bind(this);
 		this.loadMoreData = this.loadMoreData.bind(this);
-		this.state = {activeClass: "videos", data: [], maxRows: 5};
+		this.handleRowClick = this.handleRowClick.bind(this);
+		this.openImageUrl = this.openImageUrl.bind(this);
+		this.state = {activeClass: "videos", data: [], maxRows: 5, clickedRows: []};
 	}
 
 	retrieveVideos() {
@@ -39,20 +41,35 @@ class App extends React.Component {
       	});
 	}
 
+	handleRowClick(row) {
+		let clickedRows = this.state.clickedRows;
+		if(clickedRows.indexOf(row) > -1) {
+			clickedRows.splice(clickedRows.indexOf(row), 1);
+		}
+		else {
+			clickedRows.push(row);
+		}
+		this.setState({clickedRow: clickedRows});
+	}
+
+	openImageUrl(url) {
+		window.open(url, '_tab');
+	}
+
 	componentDidMount() {
 		axios.get('http://ign-apis.herokuapp.com/' + (this.state.activeClass==='videos'?'videos':'articles') + '?startIndex=30\u0026count='+this.state.maxRows)
-      	.then(data => {
-      		console.dir(data.data.data);
-       		this.setState({data: data.data.data});
-      	});
+       	.then(data => {
+        	this.setState({data: data.data.data});
+       	});
   	}
 
 	render() {
-
+		let rows = [];
 		let count = 1;
-		let tableContent = this.state.data.map((row) => {
-			return (
-				<tr>
+		for(var i = 0; i < this.state.data.length; i++) {
+			var row = this.state.data[i];
+			rows.push(
+				<tr onClick={this.handleRowClick.bind(this, i)}>
 					<td className="hover-bar"></td>
 					<td className="counter">{(count<10? "0":"")+count++}</td>
 					<td className="title">
@@ -64,8 +81,15 @@ class App extends React.Component {
 					<td className="duration">{this.state.activeClass==='videos' && Math.floor(row.metadata.duration/60) + ":" + (row.metadata.duration%60<10? "0":"") + row.metadata.duration%60}</td>
 				</tr>
 			);
-		});
-
+			if(this.state.clickedRows.indexOf(i) > -1) {
+				rows.push(	
+					 	<tr>
+							<td onClick={this.openImageUrl.bind(this, row.metadata.url)} style={{cursor: 'pointer',height: row.thumbnails[0].height+'px', width: row.thumbnails[0].width+'px',backgroundImage: "url("+row.thumbnails[0].url+")", backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%'}} colSpan="4"></td>
+						</tr>
+					
+				);
+			}
+		}
 		return (
 			<div id="center">
 				<div id="content">
@@ -75,7 +99,7 @@ class App extends React.Component {
 					</div>
 					<table className="table">
 						<tbody>
-    						{tableContent}
+    						{rows}
     					</tbody>
 			        </table>
 			        <div onClick={this.loadMoreData} id="load">{"SEE MORE " + (this.state.activeClass==="videos"? "VIDEOS...":"ARTICLES...")}</div>

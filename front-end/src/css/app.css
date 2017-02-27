@@ -134,4 +134,8 @@ table tbody tr:hover .hover-bar {
 	cursor: pointer;
 }
 
+#image-row {
+	background-image: url('http://assets1.ignimgs.com/thumbs/userUploaded/2017/1/27/res-evilpodcast-1485517113013_compact.jpg');
+}
+
 
