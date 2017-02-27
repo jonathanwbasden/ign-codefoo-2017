@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
 
-import axios from 'axios';
+import $ from 'jquery';
 
 class App extends React.Component {
 
@@ -18,27 +18,49 @@ class App extends React.Component {
 	}
 
 	retrieveVideos() {
-		axios.get('http://ign-apis.herokuapp.com/videos/?startIndex=30\u0026count=5')
-      	.then(data => {
-      		console.dir(data.data.data);
-       		this.setState({data: data.data.data, activeClass: "videos", maxRows: 5});
-      	});
+		$.ajax({
+			url: 'http://ign-apis.herokuapp.com/videos/?startIndex=0&count=5',
+			type: 'GET',			
+			headers:{'Access-Control-Allow-Headers': 'x-requested-with'},
+			dataType: 'json'
+		}).done(function(data) {
+			console.dir(data);
+			this.setState({data: data.data, activeClass: "videos", maxRows: 5, clickedRows: []});
+		}.bind(this))
+		.fail(function(data){
+			console.log(data);
+		});
 	}
 
 	retrieveArticles() {
-		axios.get('http://ign-apis.herokuapp.com/articles?startIndex=30\u0026count=5')
-      	.then(data => {
-      		console.dir(data.data.data);
-       		this.setState({data: data.data.data, activeClass: "articles", maxRows: 5});
-      	});
+		$.ajax({
+			url: 'http://ign-apis.herokuapp.com/articles/?startIndex=0&count=5',
+			type: 'GET',			
+			headers:{'Access-Control-Allow-Headers': 'x-requested-with'},
+			dataType: 'json'
+		}).done(function(data) {
+			console.dir(data);
+			this.setState({data: data.data, activeClass: "articles", maxRows: 5, clickedRows: []});
+		}.bind(this))
+		.fail(function(data){
+			console.log(data);
+		});
 	}
 
 	loadMoreData() {
-		let maxRows = this.state.maxRows + 5;
-		axios.get('http://ign-apis.herokuapp.com/'+(this.state.activeClass==='videos'?'videos':'articles') + '?startIndex=30\u0026count=' + maxRows)
-      	.then(data => {
-       		this.setState({data: data.data.data, maxRows: maxRows});
-      	});
+		let maxRows = this.state.maxRows+5;
+		$.ajax({
+			url: 'http://ign-apis.herokuapp.com/'+(this.state.activeClass==='videos'?'videos':'articles')+'/?startIndex=0&count='+maxRows,
+			type: 'GET',			
+			headers:{'Access-Control-Allow-Headers': 'x-requested-with'},
+			dataType: 'json'
+		}).done(function(data) {
+			console.dir(data);
+			this.setState({data: data.data, activeClass: (this.state.activeClass==='videos'?'videos':'articles'), maxRows: maxRows});
+		}.bind(this))
+		.fail(function(data){
+			console.log(data);
+		});
 	}
 
 	handleRowClick(row) {
@@ -57,10 +79,18 @@ class App extends React.Component {
 	}
 
 	componentDidMount() {
-		axios.get('http://ign-apis.herokuapp.com/' + (this.state.activeClass==='videos'?'videos':'articles') + '?startIndex=30\u0026count='+this.state.maxRows)
-       	.then(data => {
-        	this.setState({data: data.data.data});
-       	});
+		$.ajax({
+			url: 'http://ign-apis.herokuapp.com/videos?startIndex=0&count='+this.state.maxRows,
+			type: 'GET',			
+			headers:{'Access-Control-Allow-Headers': 'x-requested-with'},
+			dataType: 'json'
+		}).done(function(data) {
+			console.dir(data);
+			this.setState({data: data.data});
+		}.bind(this))
+		.fail(function(data){
+			console.log(data);
+		});
   	}
 
 	render() {
@@ -81,14 +111,21 @@ class App extends React.Component {
 					<td className="duration">{this.state.activeClass==='videos' && Math.floor(row.metadata.duration/60) + ":" + (row.metadata.duration%60<10? "0":"") + row.metadata.duration%60}</td>
 				</tr>
 			);
-			if(this.state.clickedRows.indexOf(i) > -1) {
+			//if(this.state.clickedRows.indexOf(i) > -1) {
 				rows.push(	
-					 	<tr>
-							<td onClick={this.openImageUrl.bind(this, row.metadata.url)} style={{cursor: 'pointer',height: row.thumbnails[0].height+'px', width: row.thumbnails[0].width+'px',backgroundImage: "url("+row.thumbnails[0].url+")", backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%'}} colSpan="4"></td>
-						</tr>
+				 	<tr style={{display: (this.state.clickedRows.indexOf(i) > -1? '':'none')}}>
+						<td style={{height: '100%', width: '100%', position: 'relative'}} colSpan="4">
+							<div style={{cursor: 'pointer'}} onClick={this.openImageUrl.bind(this, this.state.activeClass==='videos'? row.metadata.url:'http://www.ign.com/articles/'+row.metadata.slug)} className="goToIgn">GO TO IGN</div>
+							<div className="image-background">
+								<div className="image-container">
+									<img src={row.thumbnails[0].url}></img>
+								</div>
+							</div>
+						</td>
+					</tr>
 					
 				);
-			}
+			//}
 		}
 		return (
 			<div id="center">
@@ -97,11 +134,13 @@ class App extends React.Component {
 						<div onClick={this.retrieveVideos} id="videos" className={this.state.activeClass === "videos"? "active-header":"unactive-header"}>VIDEOS</div>
 						<div onClick={this.retrieveArticles} id="articles" className={this.state.activeClass === "articles"? "active-header":"unactive-header"}>ARTICLES</div>
 					</div>
-					<table className="table">
-						<tbody>
-    						{rows}
-    					</tbody>
-			        </table>
+					<div id="table-wrapper">
+						<table className="table">
+							<tbody>
+	    						{rows}
+	    					</tbody>
+				        </table>
+				    </div>
 			        <div onClick={this.loadMoreData} id="load">{"SEE MORE " + (this.state.activeClass==="videos"? "VIDEOS...":"ARTICLES...")}</div>
 				</div>
 			</div>
