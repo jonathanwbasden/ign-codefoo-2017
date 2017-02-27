@@ -111,21 +111,19 @@ class App extends React.Component {
 					<td className="duration">{this.state.activeClass==='videos' && Math.floor(row.metadata.duration/60) + ":" + (row.metadata.duration%60<10? "0":"") + row.metadata.duration%60}</td>
 				</tr>
 			);
-			//if(this.state.clickedRows.indexOf(i) > -1) {
-				rows.push(	
-				 	<tr style={{display: (this.state.clickedRows.indexOf(i) > -1? '':'none')}}>
-						<td style={{height: '100%', width: '100%', position: 'relative'}} colSpan="4">
-							<div style={{cursor: 'pointer'}} onClick={this.openImageUrl.bind(this, this.state.activeClass==='videos'? row.metadata.url:'http://www.ign.com/articles/'+row.metadata.slug)} className="goToIgn">GO TO IGN</div>
-							<div className="image-background">
-								<div className="image-container">
-									<img src={row.thumbnails[0].url}></img>
-								</div>
+			rows.push(	
+			 	<tr style={{display: (this.state.clickedRows.indexOf(i) > -1? '':'none')}}>
+					<td style={{height: '100%', width: '100%', position: 'relative'}} colSpan="4">
+						<div style={{cursor: 'pointer'}} onClick={this.openImageUrl.bind(this, this.state.activeClass==='videos'? row.metadata.url:'http://www.ign.com/articles/'+row.metadata.slug)} className="goToIgn">GO TO IGN</div>
+						<div className="image-background">
+							<div className="image-container">
+								<img src={row.thumbnails[0].url}></img>
 							</div>
-						</td>
-					</tr>
-					
-				);
-			//}
+						</div>
+					</td>
+				</tr>
+				
+			);	
 		}
 		return (
 			<div id="center">
