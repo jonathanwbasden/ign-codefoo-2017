@@ -12,21 +12,20 @@ html, body {
 #center {
 	display:flex;
 	justify-content:center;
-	align-items:center;
 	width:100%;
-	height:100%;
-	margin: 0 auto;
+	height: 100%;
 }
 
 #content {
     border-radius: 10px;
     display: flex;
- 	flex-wrap: wrap;
- 	background-color: #F7F7F7;
- 	height: auto;
- 	padding: 10px;
- 	width: 700px;
- 	max-height: 650px;
+    flex-wrap: wrap;
+    background-color: #F7F7F7;
+    padding: 10px;
+    width: 620px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: relative;
 }
 
 #header {
@@ -69,13 +68,13 @@ html, body {
 .active-header {
 	cursor: default;
 	color: #F7F7F7;
-	background-color: #D62929;
+	background-color: #bf1313;
 }
 
 .unactive-header {
 	cursor: default;
 	background-color: #F7F7F7;
-	color: #D62929;
+	color: #bf1313;
 }
 
 table {
@@ -89,6 +88,8 @@ table tbody tr:hover {
 
 table tbody tr:hover .hover-bar {
 	visibility: visible;
+	overflow: hidden;
+  	text-overflow: ellipsis;
 }
 
 .counter, .title {
@@ -102,7 +103,15 @@ table tbody tr:hover .hover-bar {
 
 .title {
 	text-align: left;
-	width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 500px;
+    height: 19px
+}
+
+.name {
+	height: 20px;
 }
 
 .duration {
@@ -113,11 +122,19 @@ table tbody tr:hover .hover-bar {
 
 .hover-bar {
 	background-color: #D62929;
-	visibility: hidden;
+    visibility: hidden;
+    position: absolute;
+    left: -7px;
+    height: 58px;
 }
 
 .description {
 	color: #adadad;
+	text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 500px;
 }
 
 #load {
@@ -137,7 +154,6 @@ table tbody tr:hover .hover-bar {
 }
 
 #table-wrapper {
-	max-height: 550px;;
 	overflow-y: auto;
 }
 
@@ -173,17 +189,26 @@ img {
 
 .goToIgn {
 	position: absolute;
-	top: 15px;
-	right: 15px;
-	border-radius: 7px;
-	background-color:  #D62929;
-	z-index: 1;
-	color: #F7F7F7;
-	font-weight: bold;
-	font-size: 30px;
-	display:flex;
-	justify-content:center;
-	align-items:center;
-	padding-left: 5px;
-	padding-right: 5px;
+    top: 35px;
+    right: 35px;
+    border-radius: 7px;
+    background-color: #bf1313;
+    z-index: 1;
+    color: #F7F7F7;
+    font-weight: bold;
+    font-size: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 50px;
+}
+
+#content-background {
+	background-color: black;
+    height: 100%;
+    width: 640px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
