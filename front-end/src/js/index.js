@@ -21,7 +21,6 @@ class App extends React.Component {
 		$.ajax({
 			url: 'http://ign-apis.herokuapp.com/videos/?startIndex=0&count=5',
 			type: 'GET',			
-			headers:{'Access-Control-Allow-Headers': 'x-requested-with'},
 			dataType: 'json'
 		}).done(function(data) {
 			console.dir(data);
@@ -35,9 +34,9 @@ class App extends React.Component {
 	retrieveArticles() {
 		$.ajax({
 			url: 'http://ign-apis.herokuapp.com/articles/?startIndex=0&count=5',
-			type: 'GET',			
-			headers:{'Access-Control-Allow-Headers': 'x-requested-with'},
-			dataType: 'json'
+			type: 'GET',
+			dataType: 'json',
+			accept: 'application.json'
 		}).done(function(data) {
 			console.dir(data);
 			this.setState({data: data.data, activeClass: "articles", maxRows: 5, clickedRows: [], loaded: true});
@@ -52,7 +51,6 @@ class App extends React.Component {
 		$.ajax({
 			url: 'http://ign-apis.herokuapp.com/'+(this.state.activeClass==='videos'?'videos':'articles')+'/?startIndex=0&count='+maxRows,
 			type: 'GET',			
-			headers:{'Access-Control-Allow-Headers': 'x-requested-with'},
 			dataType: 'json'
 		}).done(function(data) {
 			console.dir(data);
@@ -87,12 +85,9 @@ class App extends React.Component {
 	componentDidMount() {
 		$.ajax({
 			url: 'http://ign-apis.herokuapp.com/videos?startIndex=0&count='+this.state.maxRows,
-			crossOrigin: true,
 			type: 'GET',
-			xhrFields: { withCredentials: true },	
 			dataType: 'json',
-			accept: 'application/json',
-			headers:{'Access-Control-Allow-Origin': '*'}
+			accept: 'application/json, text/javascript, */*; q=0.0'
 		}).done(function(data) {
 			console.dir(data);
 			this.setState({data: data.data, loaded: true});
