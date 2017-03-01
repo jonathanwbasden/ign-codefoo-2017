@@ -74,7 +74,7 @@ export default class IGNFeed extends React.Component {
 
 	componentDidMount() {
 		$.ajax({
-			url: 'http://ign-apis.herokuapp.com/videos?startIndex=0&count='+this.state.maxRows,
+			url: 'http://ign-apis.herokuapp.com/videos?startIndex=0&count=10',
 			type: 'GET',
 			dataType: 'jsonp',
 		}).done(function(data) {
