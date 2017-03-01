@@ -24,7 +24,7 @@ export default class IGNFeed extends React.Component {
 			dataType: 'jsonp'
 		}).done(function(data) {
 			console.dir(data);
-			this.setState({data: data.data, activeClass: "videos", maxRows: 10, clickedRow: -1, loaded: true, hasLoadedMoreData: false});
+			this.setState({data: data.data, activeClass: "videos", maxRows: 0, clickedRow: -1, loaded: true, hasLoadedMoreData: false});
 		}.bind(this))
 		.fail(function(data){
 			console.log(data);
@@ -38,7 +38,7 @@ export default class IGNFeed extends React.Component {
 			dataType: 'jsonp',
 		}).done(function(data) {
 			console.dir(data);
-			this.setState({data: data.data, activeClass: "articles", maxRows: 10, clickedRow: -1, loaded: true, hasLoadedMoreData: false});
+			this.setState({data: data.data, activeClass: "articles", maxRows: 0, clickedRow: -1, loaded: true, hasLoadedMoreData: false});
 		}.bind(this))
 		.fail(function(data){
 			console.log(data);
