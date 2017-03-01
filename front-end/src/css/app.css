@@ -112,6 +112,10 @@ table tbody tr:hover .hover-bar {
 
 .name {
 	height: 20px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 500px;
 }
 
 .duration {
