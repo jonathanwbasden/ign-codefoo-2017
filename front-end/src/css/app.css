@@ -17,7 +17,7 @@ html, body {
 }
 
 #content {
-    border-radius: 10px;
+    border-radius: 5px;
     display: flex;
     flex-wrap: wrap;
     background-color: #F7F7F7;

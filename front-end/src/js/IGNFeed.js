@@ -5,7 +5,7 @@ import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
 
 import $ from 'jquery';
 
-class App extends React.Component {
+export default class IGNFeed extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -14,14 +14,14 @@ class App extends React.Component {
 		this.loadMoreData = this.loadMoreData.bind(this);
 		this.handleRowClick = this.handleRowClick.bind(this);
 		this.openImageUrl = this.openImageUrl.bind(this);
-		this.state = {activeClass: "videos", data: [], maxRows: 10, clickedRows: [], loaded: false, hasLoadedMoreData: false};
+		this.state = {activeClass: "videos", data: [], maxRows: 0, clickedRow: -1, loaded: false, hasLoadedMoreData: false};
 	}
 
 	retrieveVideos() {
 		$.ajax({
 			url: 'http://ign-apis.herokuapp.com/videos/?startIndex=0&count=10',
 			type: 'GET',			
-			dataType: 'json'
+			dataType: 'jsonp'
 		}).done(function(data) {
 			console.dir(data);
 			this.setState({data: data.data, activeClass: "videos", maxRows: 10, clickedRow: -1, loaded: true, hasLoadedMoreData: false});
@@ -35,10 +35,10 @@ class App extends React.Component {
 		$.ajax({
 			url: 'http://ign-apis.herokuapp.com/articles/?startIndex=0&count=10',
 			type: 'GET',
-			dataType: 'json',
+			dataType: 'jsonp',
 		}).done(function(data) {
 			console.dir(data);
-			this.setState({data: data.data, activeClass: "articles", maxRows: 10, clickedRows: [], loaded: true, hasLoadedMoreData: false});
+			this.setState({data: data.data, activeClass: "articles", maxRows: 10, clickedRow: -1, loaded: true, hasLoadedMoreData: false});
 		}.bind(this))
 		.fail(function(data){
 			console.log(data);
@@ -46,11 +46,11 @@ class App extends React.Component {
 	}
 
 	loadMoreData() {
-		let maxRows = this.state.maxRows;
+		let maxRows = this.state.maxRows + 10;
 		$.ajax({
-			url: 'http://ign-apis.herokuapp.com/'+(this.state.activeClass==='videos'?'videos':'articles')+'/?startIndex='+this.state.maxRows+'&count='+maxRows,
+			url: 'http://ign-apis.herokuapp.com/'+(this.state.activeClass==='videos'?'videos':'articles')+'/?startIndex='+maxRows+'&count=10',
 			type: 'GET',			
-			dataType: 'json'
+			dataType: 'jsonp'
 		}).done(function(data) {
 			let newData = this.state.data;
 			console.dir(this.state.data);
@@ -76,7 +76,7 @@ class App extends React.Component {
 		$.ajax({
 			url: 'http://ign-apis.herokuapp.com/videos?startIndex=0&count='+this.state.maxRows,
 			type: 'GET',
-			dataType: 'json',
+			dataType: 'jsonp',
 			accept: 'application/json, text/javascript, */*; q=0.0'
 		}).done(function(data) {
 			console.dir(data);
@@ -119,7 +119,7 @@ class App extends React.Component {
 		}
 		return (
 			<div style={{height: this.state.hasLoadedMoreData? 'auto':'100%'}} id="center">
-			<div id="content-background">
+				<div id="content-background">
 					<div id="content">
 						<div id="header">
 							<div onClick={this.retrieveVideos} id="videos" className={this.state.activeClass === "videos"? "active-header":"unactive-header"}>VIDEOS</div>
@@ -139,5 +139,3 @@ class App extends React.Component {
 		);
 	}
 }
-
-ReactDOM.render(<App />, document.getElementById('app'));
