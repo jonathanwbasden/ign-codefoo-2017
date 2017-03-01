@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --inline --hot --content-base src",
-    "build": "webpack --progress -p"
+    "build": "webpack --progress -p",
+    "heroku-postbuild": "webpack -p --config ./webpack.config.js --progress"
   },
   "author": "",
   "license": "ISC",
